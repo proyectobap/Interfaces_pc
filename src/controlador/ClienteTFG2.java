@@ -40,6 +40,13 @@ public class ClienteTFG2 extends Thread{
 	private int retry = 15;
 	public boolean running = true;
 	public static int tipo;
+	public static int id_user;
+	public static int id_usuario_logueado;
+	public static int id_ticket;
+	public static int id_user_asignado;
+	public static boolean lista_eventos=false;
+	public static int lista_eventos_numero;
+	
 	
 	public ClienteTFG2(String userName, String passWord, EncryptModule enc, RespuestaLogin interfaz) {
 		this.userName = userName;
@@ -124,8 +131,10 @@ public class ClienteTFG2 extends Thread{
             	interfaz.respuesta();
             	JSONArray tipo_usuario_login = respuesta.getJSONArray("content");
             	JSONObject tipo_user = tipo_usuario_login.getJSONObject(0);
-            	tipo = tipo_user.getInt("id");
-            	System.out.println(tipo);
+            	tipo = tipo_user.getInt("user_type");
+            	id_usuario_logueado = tipo_user.getInt("user_id");
+            	System.out.println("id del usuario logueado: "+id_usuario_logueado);
+            	System.out.println("tipo de usuario que se a logueado: " + tipo);
             	
             }
             
@@ -137,6 +146,7 @@ public class ClienteTFG2 extends Thread{
             	this.cerrarConexion();
             	System.exit(0);
             }
+         
 
         } catch (Exception e) {
             // Controlar
@@ -213,16 +223,44 @@ public class ClienteTFG2 extends Thread{
         respuestaEnc = (String) entrada.readObject();
         JSONObject rr = new JSONObject(enc.symetricDecript(respuestaEnc));
         System.out.println(rr.toString());
+    	JSONArray tipo_usuario_login = rr.getJSONArray("content");
+    	System.out.println("imprimir peticion "+peticion.toString());
+    	if (peticion.getString("peticion").equalsIgnoreCase("newUser")){
+        	JSONObject tipo_user = tipo_usuario_login.getJSONObject(0);
+        	id_user = tipo_user.getInt("id");
+        	System.out.println("id del nuevo user" + id_user);
+    	}
+    	if (peticion.getString("peticion").equalsIgnoreCase("newTicket")){
+        	JSONObject tipo_user = tipo_usuario_login.getJSONObject(0);
+        	id_ticket = tipo_user.getInt("id");
+        	System.out.println("id del nuevo ticket" + id_ticket);
+    	}
+    	if (peticion.getString("peticion").equalsIgnoreCase("TECHRELATION")){
+    		System.out.println("longitud del content "+ tipo_usuario_login.length());
+    		if(tipo_usuario_login.length()==0) {
+    			id_user_asignado=0;
+    		}else {
+	    		for (int i=0; i < tipo_usuario_login.length(); i++) {
+	        	JSONObject tipo_user = tipo_usuario_login.getJSONObject(i);
+	        	id_user_asignado = tipo_user.getInt("assigned_tech");
+	    		}
+    		}
+    	}
+    	if (peticion.getString("peticion").equalsIgnoreCase("LISTEVENTS")){
+    		System.out.println("longitud del content "+ tipo_usuario_login.length());
+    		if(tipo_usuario_login.length()!=0) {
+    			lista_eventos=true;
+    			lista_eventos_numero=1;
+    		}else if(tipo_usuario_login.length()==0){
+    			
+    			lista_eventos=false;
+
+    		}
+    	}
+  
         interfaz2.respuesta(rr);
         
-        /*System.out.println(respuesta.getInt("response"));
         
-        content = new JSONArray();
-        content = respuesta.getJSONArray("content");
-        
-        for (int i = 0; i < content.length(); i++) {
-        	System.out.println(content.getJSONObject(i).toString());
-        }*/
 		
 	}
 	

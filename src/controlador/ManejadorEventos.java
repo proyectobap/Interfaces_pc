@@ -17,7 +17,6 @@ import org.json.JSONObject;
 
 import vista.CreaTickets;
 import vista.Login;
-import vista.VentanaPrincipal;
 import vista.VentanaPrincipal2;
 
 

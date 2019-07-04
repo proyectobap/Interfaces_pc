@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import controlador.ClienteTFG2;
@@ -19,11 +20,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.DropMode;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 
 public class CrearUser2 extends JFrame {
@@ -36,56 +42,60 @@ public class CrearUser2 extends JFrame {
 	private JComboBox comboBox_usertype;
 	int tipo_usuario;
 	Border border = BorderFactory.createLineBorder(Color.BLUE);
-	private JButton atras_btn;
+	private JLabel lblCrearUsuario;
+	private JLabel atras_icon_label;
 
 
 
 	
 	public CrearUser2() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setResizable(false);
-		setBounds(100, 100, 411, 491);
+		setSize(439, 477);
+		setUndecorated(true);//quitar bordes
+		setLocationRelativeTo(null); 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		getContentPane().setBackground(new Color(0, 191, 255));
 		contentPane.setLayout(null);
 		
-		text_nombre = new RedondearCampos(80);
+		text_nombre = new JTextField();
 		text_nombre.setBorder(border);
-		text_nombre.setBounds(132, 52, 214, 20);
+		text_nombre.setBounds(173, 167, 214, 20);
 		contentPane.add(text_nombre);
 		text_nombre.setColumns(10);
 		
-		JLabel nombre = new JLabel("Nombre");
+		JLabel nombre = new JLabel("Nombre:");
 		nombre.setFont(new Font("Tahoma", Font.BOLD, 13));
-		nombre.setBounds(32, 54, 76, 14);
+		nombre.setBounds(79, 169, 56, 14);
 		contentPane.add(nombre);
 		
-		JLabel apellido = new JLabel("Apellido");
+		JLabel apellido = new JLabel("Apellido:");
 		apellido.setFont(new Font("Tahoma", Font.BOLD, 13));
-		apellido.setBounds(32, 103, 63, 14);
+		apellido.setBounds(79, 220, 56, 14);
 		contentPane.add(apellido);
 		
-		JLabel email = new JLabel("Email");
+		JLabel email = new JLabel("Email:");
 		email.setFont(new Font("Tahoma", Font.BOLD, 13));
-		email.setBounds(32, 163, 46, 14);
+		email.setBounds(98, 274, 37, 14);
 		contentPane.add(email);
 		
-		text_lastname =new RedondearCampos(80);
+		text_lastname =new JTextField();
 		text_lastname.setBorder(border);
-		text_lastname.setBounds(132, 101, 214, 20);
+		text_lastname.setBounds(173, 218, 214, 20);
 		contentPane.add(text_lastname);
 		text_lastname.setColumns(10);
 		
-		text_email = new RedondearCampos(80);
-		//text_email.setBorder(border);
-		text_email.setBounds(132, 161, 214, 20);
+		text_email = new JTextField();
+		text_email.setBorder(border);
+		text_email.setBounds(173, 272, 214, 20);
 		contentPane.add(text_email);
 		text_email.setColumns(10);
 		
 		setBtnCrearTicket(new JButton("Crear Usuario"));
 		getBtnCrearTicket().setFont(new Font("Tahoma", Font.BOLD, 14));
-		getBtnCrearTicket().setBounds(132, 291, 214, 37);
+		getBtnCrearTicket().setBounds(173, 407, 214, 37);
 		btnCrearUser.addActionListener(new ActionListener() {
 
 			@Override
@@ -99,8 +109,6 @@ public class CrearUser2 extends JFrame {
 					tipo_usuario=3;
 				}else if(getComboBox_usertype().getSelectedItem().toString()=="Usuario con Login") {
 					tipo_usuario=2;
-				}else if(getComboBox_usertype().getSelectedItem().toString()=="Usuario sin Login") {
-					tipo_usuario=1;
 				}
 				
 				JSONObject peticion=crearUser(getText_email().getText(), getText_nombre().getText(), getText_lastname().getText(), tipo_usuario);
@@ -115,21 +123,66 @@ public class CrearUser2 extends JFrame {
 				} catch (InterruptedException d) {
 					d.printStackTrace();
 				}
-				JOptionPane.showMessageDialog(null, "user creado con exito");
+				
+				Sleep(2000);
+				System.out.println("id que le paso al usuario nuevo " + ClienteTFG2.id_user);
+				JSONObject peticion2=crearLogin(getText_nombre().getText(), getText_nombre().getText(), ClienteTFG2.id_user);
+				
+				JSONObject pregunta2 = peticion2;
+				System.out.println(pregunta2);
+				
+				HiloPeticiones hilo2 = new HiloPeticiones(pregunta2);
+				hilo2.start();
+				try {
+					hilo2.join();
+				} catch (InterruptedException d) {
+					d.printStackTrace();
+				}
+
+				JOptionPane.showMessageDialog(null, "user y login creado con exito");
+				TablaListaUsers tabla_users= new TablaListaUsers();
+				tabla_users.setVisible(true);
 				dispose();
+				
+				if(getComboBox_usertype().getSelectedItem().toString()=="Usuario sin Login") {
+					tipo_usuario=1;
+					
+					JSONObject peticion_sinlogin=crearUser(getText_email().getText(), getText_nombre().getText(), getText_lastname().getText(), tipo_usuario);
+					
+					JSONObject pregunta_sinlogin = peticion_sinlogin;
+					System.out.println(pregunta_sinlogin);
+					
+					HiloPeticiones hilo_sinlogin = new HiloPeticiones(pregunta_sinlogin);
+					hilo_sinlogin.start();
+					try {
+						hilo_sinlogin.join();
+					} catch (InterruptedException d) {
+						d.printStackTrace();
+					}
+					JOptionPane.showMessageDialog(null, "user creado con exito");
+					TablaListaUsers tabla_users2= new TablaListaUsers();
+					tabla_users2.setVisible(true);
+					dispose();
+				}
+
+				
+			}
+
+			private void Sleep(int i) {
+				// TODO Apéndice de método generado automáticamente
 				
 			}
 			
 		});
 		contentPane.add(getBtnCrearTicket());
 		
-		JLabel lblEstado = new JLabel("User_type");
+		JLabel lblEstado = new JLabel("Tipo de Usuario:");
 		lblEstado.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblEstado.setBounds(32, 223, 76, 14);
+		lblEstado.setBounds(32, 330, 103, 14);
 		contentPane.add(lblEstado);
 		
 		setComboBox_usertype(new JComboBox());
-		getComboBox_usertype().setBounds(132, 221, 214, 20);
+		getComboBox_usertype().setBounds(173, 328, 214, 20);
 		getComboBox_usertype().addItem("Usuario sin Login");
 		getComboBox_usertype().addItem("Usuario con Login");
 		getComboBox_usertype().addItem("Técnico");
@@ -137,21 +190,53 @@ public class CrearUser2 extends JFrame {
 		getComboBox_usertype().addItem("Administrador");
 		contentPane.add(getComboBox_usertype());
 		
-		atras_btn = new JButton("Atras");
-		atras_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		lblCrearUsuario = new JLabel("Crear Usuario");
+		lblCrearUsuario.setFont(new Font("Tahoma", Font.BOLD, 27));
+		lblCrearUsuario.setBounds(136, 59, 186, 48);
+		contentPane.add(lblCrearUsuario);
+		
+		Image imagen_salir=new ImageIcon("salir2.png").getImage();
+		atras_icon_label = new JLabel(new ImageIcon(imagen_salir.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		atras_icon_label.setBounds(10, 11, 53, 52);
+		atras_icon_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
 				TablaListaUsers tabla_users= new TablaListaUsers();
 				tabla_users.setVisible(true);
 				dispose();
+				
 			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
 		});
-		atras_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		atras_btn.setBounds(132, 359, 214, 37);
-		contentPane.add(atras_btn);
+		getContentPane().add(atras_icon_label);
 	}
-
-
-
+	
 
 	public JButton getBtnCrearTicket() {
 		return btnCrearUser;
@@ -212,6 +297,20 @@ public class CrearUser2 extends JFrame {
     	prueba.put("name", name);
     	prueba.put("lastname", lastname);
     	prueba.put("user_type", user_type);
+    	
+    	
+    	return prueba;
+    	
+    }
+    
+    //crear el login del usuario que vamos a crear
+    public JSONObject crearLogin(String loginname, String shdw_password, int user_id) {
+    	JSONObject prueba = new JSONObject();
+    	prueba.put("peticion","NEWLOGIN");
+    	prueba.put("login_name", loginname);
+    	prueba.put("shdw_passwd", shdw_password);
+    	prueba.put("user_id", user_id);
+
     	
     	
     	return prueba;

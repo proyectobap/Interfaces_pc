@@ -17,13 +17,21 @@ import controlador.ManejadorEventos;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
+
 import javax.swing.JLabel;
 
 public class VentanaPrincipal2 extends JFrame {
@@ -37,11 +45,14 @@ public class VentanaPrincipal2 extends JFrame {
 	public JSONObject prueba;
 	private JButton salir_btn;
 	private JLabel titulo_text;
+	private JLabel logo;
+	private JLabel miperfil_label;
 
 
 	public VentanaPrincipal2() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(393, 514);//tamaño ventana
+		setSize(394, 574);//tamaño ventana
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setUndecorated(true);//quitar bordes
@@ -121,9 +132,61 @@ public class VentanaPrincipal2 extends JFrame {
 		getContentPane().add(salir_btn);
 		
 		titulo_text = new JLabel("Gestion de tickets");
-		titulo_text.setFont(new Font("Tahoma", Font.BOLD, 20));
-		titulo_text.setBounds(115, 47, 187, 38);
+		titulo_text.setFont(new Font("Tahoma", Font.BOLD, 29));
+		titulo_text.setBounds(63, 47, 267, 38);
 		getContentPane().add(titulo_text);
+		
+
+		
+		
+		miperfil_label = new JLabel("Mi Perfil");
+		miperfil_label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		miperfil_label.setBounds(267, 512, 63, 24);
+		miperfil_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Miperfil miperfil = new Miperfil();
+				miperfil.setVisible(true);
+				dispose();
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				miperfil_label.setForeground(Color.blue);
+				Font font = miperfil_label.getFont();
+				Map attributes = font.getAttributes();
+				attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+				miperfil_label.setFont(font.deriveFont(attributes));
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				miperfil_label.setForeground(Color.black);
+				miperfil_label.setFont(new Font("Tahoma", Font.PLAIN, 16));					
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
+		getContentPane().add(miperfil_label);
+		
+		Image img = new ImageIcon("icono_login.png").getImage();
+		logo = new JLabel(new ImageIcon(img.getScaledInstance(30, 32, Image.SCALE_SMOOTH)));
+		logo.setBounds(218, 495, 48, 49);
+		getContentPane().add(logo);
 	}
 
 	

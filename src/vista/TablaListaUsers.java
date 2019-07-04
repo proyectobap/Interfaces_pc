@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.management.StringValueExp;
 import javax.swing.JFrame;
@@ -29,14 +30,25 @@ import controlador.ClienteTFG;
 import controlador.ClienteTFG2;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class TablaListaUsers extends JFrame {
 	
 	private final JPanel contentPanel = new JPanel();
+	public static int id;
+	public static String user_id;
+	public static String email;
+	public static String nombre;
+	public static String apellido;
+	public static String tipo_user;
+	private JLabel atras_icon_label;
 	
 	public TablaListaUsers() {
 		
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		getContentPane().setBackground(new Color(0, 191, 255));
 		setSize(990, 438);
 		setLocationRelativeTo(null);
@@ -44,7 +56,6 @@ public class TablaListaUsers extends JFrame {
 		contentPanel.setBounds(0, 0, 0, 0);
 		contentPanel.setBackground(new Color(0, 191, 255));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setIconImage(Toolkit.getDefaultToolkit().getImage("calculadora.png"));
 		setTitle("Gestion tickets");
 		setResizable(false);
 		
@@ -59,15 +70,7 @@ public class TablaListaUsers extends JFrame {
 
 		JSONObject pregunta = new JSONObject().put("peticion", "listusers");
 		System.out.println(pregunta);
-		/*JSONObject pregunta2 = new JSONObject().put("peticion", "listusertype");
-		System.out.println(pregunta2);
-		HiloPeticiones hilo2 = new HiloPeticiones(pregunta2);
-		hilo2.start();
-		try {
-			hilo2.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}para saber que tipo de users son*/
+
 		HiloPeticiones hilo = new HiloPeticiones(pregunta);
 		hilo.start();
 		try {
@@ -126,18 +129,21 @@ public class TablaListaUsers extends JFrame {
 		lista_usuarios.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				int row = lista_usuarios.rowAtPoint(e.getPoint());
-				String user_id="id del usuario : " + lista_usuarios.getValueAt(row, 0).toString();
-				String email="email: " + lista_usuarios.getValueAt(row, 1).toString();
-				String nombre="Nombre: " + lista_usuarios.getValueAt(row, 2).toString();
-				String apellido="Apellido: " + lista_usuarios.getValueAt(row, 3).toString();
-				String tipo_user =lista_usuarios.getValueAt(row, 4).toString();
+				user_id= lista_usuarios.getValueAt(row, 0).toString();
+				email= lista_usuarios.getValueAt(row, 1).toString();
+				nombre= lista_usuarios.getValueAt(row, 2).toString();
+				apellido= lista_usuarios.getValueAt(row, 3).toString();
+				tipo_user = lista_usuarios.getValueAt(row, 4).toString();
 				Userindividual user_individual = new Userindividual(user_id, email, nombre, apellido, tipo_user);
+				if (ClienteTFG2.tipo>4) {//si el usuario logueado es un Administrador el boton modificar se activara
+					System.out.println(ClienteTFG2.tipo);
+					user_individual.modificar_btn.setEnabled(true);
+				}
 				user_individual.setVisible(true);
+				dispose();
 			}
 		});
 		
-		
-	
 		
 		/****/
 		getContentPane().setLayout(null);
@@ -157,6 +163,11 @@ public class TablaListaUsers extends JFrame {
 		getContentPane().add(lblListaDeUsuarios);
 		
 		JButton btnNewButton = new JButton("Crear Usuario");
+		if(ClienteTFG2.tipo>4) {
+			btnNewButton.setEnabled(true);
+		}else {
+			btnNewButton.setEnabled(false);
+		}
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CrearUser2 crearuser=new CrearUser2();
@@ -188,26 +199,46 @@ public class TablaListaUsers extends JFrame {
 		actualizar_btn.setBounds(522, 348, 125, 47);
 		getContentPane().add(actualizar_btn);
 		
-		JButton eliminar_user = new JButton("Eliminar Usuario");
-		eliminar_user.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		eliminar_user.setEnabled(false);
-		eliminar_user.setBounds(372, 348, 125, 47);
-		getContentPane().add(eliminar_user);
-		
-		JButton atras_btn = new JButton("Atras");
-		atras_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Image imagen_salir=new ImageIcon("salir2.png").getImage();
+		atras_icon_label = new JLabel(new ImageIcon(imagen_salir.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		atras_icon_label.setBounds(10, 11, 53, 52);
+		atras_icon_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
 				VentanaPrincipal2 ventanaprincipal = new VentanaPrincipal2();
 				ventanaprincipal.setVisible(true);
 				dispose();
+				
 			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
 		});
-		atras_btn.setBounds(81, 348, 113, 47);
-		getContentPane().add(atras_btn);
+		getContentPane().add(atras_icon_label);
 		
 		
 	}
