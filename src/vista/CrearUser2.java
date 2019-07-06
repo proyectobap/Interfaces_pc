@@ -49,6 +49,7 @@ public class CrearUser2 extends JFrame {
 
 	
 	public CrearUser2() {
+	
 		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setResizable(false);
 		setSize(439, 477);

@@ -18,6 +18,7 @@ import controlador.ManejadorEventos;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
@@ -31,6 +32,9 @@ import java.security.InvalidKeyException;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
+
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -51,13 +55,15 @@ public class CambiarMiPerfil extends JFrame {
 	public String email;
 	public int id;
 	public String user_type;
+	private JLabel atras_icon_label;
 	
 
 
 	public CambiarMiPerfil() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		datosmiperfil();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(445, 601);//tamaño ventana
+		setSize(445, 433);//tamaño ventana
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setUndecorated(true);//quitar bordes
@@ -68,89 +74,83 @@ public class CambiarMiPerfil extends JFrame {
 		cambiar_pass_btn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				if(ClienteTFG2.tipo<5) {
-					JSONObject peticion=cambiarMiPerfil(getEmail_text().getText(), getNombre_text().getText(), getApellido_text().getText(), ClienteTFG2.tipo);
-					
-					JSONObject pregunta = peticion;
-					System.out.println(pregunta);
-					
-					HiloPeticiones hilo = new HiloPeticiones(pregunta);
-					hilo.start();
-					try {
-						hilo.join();
-					} catch (InterruptedException d) {
-						d.printStackTrace();
-					}
-					JOptionPane.showMessageDialog(null, "Perfil modificado con exito");
-					VentanaPrincipal2 ventanaPrincipal= new VentanaPrincipal2();
-					ventanaPrincipal.setVisible(true);
-					dispose();
+				
+				if(getEmail_text().getText().isEmpty() || getNombre_text().getText().isEmpty() || getApellido_text().getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "te has olvidado rellenar algun campo");
+
 				}else {
-					if (getComboBox().getSelectedItem().toString()=="Administrador") {
-						tipo_usuario=5;
-					}else if(getComboBox().getSelectedItem().toString()=="Supervisor") {
-						tipo_usuario=4;
-					}else if(getComboBox().getSelectedItem().toString()=="Técnico") {
-						tipo_usuario=3;
-					}else if(getComboBox().getSelectedItem().toString()=="Usuario con Login") {
-						tipo_usuario=2;
-					}else if(getComboBox().getSelectedItem().toString()=="Usuario sin Login") {
-						tipo_usuario=1;
+					if(ClienteTFG2.tipo<5) {
+						JSONObject peticion=cambiarMiPerfil(getEmail_text().getText(), getNombre_text().getText(), getApellido_text().getText(), ClienteTFG2.tipo);
+						
+						JSONObject pregunta = peticion;
+						System.out.println(pregunta);
+						
+						HiloPeticiones hilo = new HiloPeticiones(pregunta);
+						hilo.start();
+						try {
+							hilo.join();
+						} catch (InterruptedException d) {
+							d.printStackTrace();
+						}
+						JOptionPane.showMessageDialog(null, "Perfil modificado con exito");
+						VentanaPrincipal2 ventanaPrincipal= new VentanaPrincipal2();
+						ventanaPrincipal.setVisible(true);
+						dispose();
+					}else {
+						if (getComboBox().getSelectedItem().toString()=="Administrador") {
+							tipo_usuario=5;
+						}else if(getComboBox().getSelectedItem().toString()=="Supervisor") {
+							tipo_usuario=4;
+						}else if(getComboBox().getSelectedItem().toString()=="Técnico") {
+							tipo_usuario=3;
+						}else if(getComboBox().getSelectedItem().toString()=="Usuario con Login") {
+							tipo_usuario=2;
+						}else if(getComboBox().getSelectedItem().toString()=="Usuario sin Login") {
+							tipo_usuario=1;
+						}
+						JSONObject peticion=cambiarMiPerfil(getEmail_text().getText(), getNombre_text().getText(), getApellido_text().getText(), tipo_usuario);
+						
+						JSONObject pregunta = peticion;
+						System.out.println(pregunta);
+						
+						HiloPeticiones hilo = new HiloPeticiones(pregunta);
+						hilo.start();
+						try {
+							hilo.join();
+						} catch (InterruptedException d) {
+							d.printStackTrace();
+						}
+						JOptionPane.showMessageDialog(null, "Perfil modificado con exito");
+						VentanaPrincipal2 ventanaPrincipal= new VentanaPrincipal2();
+						ventanaPrincipal.setVisible(true);
+						dispose();
 					}
-					JSONObject peticion=cambiarMiPerfil(getEmail_text().getText(), getNombre_text().getText(), getApellido_text().getText(), tipo_usuario);
-					
-					JSONObject pregunta = peticion;
-					System.out.println(pregunta);
-					
-					HiloPeticiones hilo = new HiloPeticiones(pregunta);
-					hilo.start();
-					try {
-						hilo.join();
-					} catch (InterruptedException d) {
-						d.printStackTrace();
-					}
-					JOptionPane.showMessageDialog(null, "Perfil modificado con exito");
-					VentanaPrincipal2 ventanaPrincipal= new VentanaPrincipal2();
-					ventanaPrincipal.setVisible(true);
-					dispose();
 				}
 
 			}
 		});
 		cambiar_pass_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		cambiar_pass_btn.setBounds(219, 409, 156, 36);
+		cambiar_pass_btn.setBounds(219, 355, 156, 36);
 		getContentPane().add(cambiar_pass_btn);
-		
-		JButton atras_btn = new JButton("Atras");
-		atras_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Miperfil miperfil = new Miperfil();
-				miperfil.setVisible(true);
-				dispose();
-			}
-		});
-		atras_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		atras_btn.setBounds(219, 456, 156, 36);
-		getContentPane().add(atras_btn);
 		
 		JLabel nombre_label = new JLabel("Nombre:");
 		nombre_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		nombre_label.setBounds(120, 195, 61, 20);
+		nombre_label.setBounds(122, 145, 61, 20);
 		getContentPane().add(nombre_label);
 		
 		JLabel apellido_label = new JLabel("Apellido:");
 		apellido_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		apellido_label.setBounds(122, 243, 59, 20);
+		apellido_label.setBounds(124, 196, 59, 20);
 		getContentPane().add(apellido_label);
 		
 		JLabel email_label = new JLabel("Email:");
 		email_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		email_label.setBounds(140, 297, 41, 20);
+		email_label.setBounds(142, 251, 41, 20);
 		getContentPane().add(email_label);
 		
 		JLabel user_type_label = new JLabel("Tipo de Usuario:");
 		user_type_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		user_type_label.setBounds(69, 351, 112, 20);
+		user_type_label.setBounds(71, 301, 112, 20);
 		getContentPane().add(user_type_label);
 		if(ClienteTFG2.tipo<5) {
 			user_type_label.setVisible(false);
@@ -160,23 +160,22 @@ public class CambiarMiPerfil extends JFrame {
 		}
 		
 		setNombre_text(new JTextField(nombre));
-		getNombre_text().setBounds(219, 197, 156, 20);
+		getNombre_text().setBounds(219, 147, 156, 20);
 		getContentPane().add(getNombre_text());
 		getNombre_text().setColumns(10);
 		
 		setApellido_text(new JTextField(apellido));
-		getApellido_text().setBounds(219, 245, 156, 20);
+		getApellido_text().setBounds(219, 198, 156, 20);
 		getContentPane().add(getApellido_text());
 		getApellido_text().setColumns(10);
 		
 		setEmail_text(new JTextField(email));
-		getEmail_text().setBounds(219, 299, 156, 20);
+		getEmail_text().setBounds(219, 251, 156, 20);
 		getContentPane().add(getEmail_text());
 		getEmail_text().setColumns(10);
 		
 		setComboBox(new JComboBox());
-		getComboBox().setBounds(219, 351, 156, 20);
-		
+		getComboBox().setBounds(219, 303, 156, 20);
 		getContentPane().add(getComboBox());
 		if(ClienteTFG2.tipo<5) {
 			getComboBox().setVisible(false);
@@ -190,10 +189,53 @@ public class CambiarMiPerfil extends JFrame {
 		getComboBox().addItem("Supervisor");
 		getComboBox().addItem("Administrador");
 		
+		getComboBox().setSelectedIndex((ClienteTFG2.tipo - 1));
+		
 		JLabel tituloventana = new JLabel("Modificar mi Perfil");
 		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 23));
-		tituloventana.setBounds(120, 76, 214, 28);
+		tituloventana.setBounds(122, 57, 214, 28);
 		getContentPane().add(tituloventana);
+		
+		Image imagen_salir=new ImageIcon("salir2.png").getImage();
+		atras_icon_label = new JLabel(new ImageIcon(imagen_salir.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		atras_icon_label.setBounds(24, 21, 53, 52);
+		atras_icon_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				Miperfil miperfil = new Miperfil();
+				miperfil.setVisible(true);
+				dispose();
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
+		getContentPane().add(atras_icon_label);
 		
 		inicializarComponentes();
 		
@@ -284,9 +326,11 @@ public class CambiarMiPerfil extends JFrame {
 					user_type="Supervisor";
 				}else if(tipo_usuario==5){
 					user_type="Administrador";
+
 				}
 				
 			}
+		
 					
 		}
 	}

@@ -51,7 +51,7 @@ public class TablaListaTickets extends JFrame {
 	public JLabel atras_icon_label;
 	
 	public TablaListaTickets() {
-		
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		getContentPane().setBackground(new Color(0, 191, 255));
 		setSize(988, 450);
 		setLocationRelativeTo(null);
@@ -61,6 +61,7 @@ public class TablaListaTickets extends JFrame {
 		setTitle("Gestion tickets");
 		setResizable(false);
 		
+		//peticion para sacar la tabla con todos los tickets que hay creados en la aplicacion
 		/********************************************************************************************************/
 		
 		String nombres_columnas[]= {"ID_ticket", "Titulo", "descripcion", "estado", "fecha", "id cliente"};//columnas de la tabla 
@@ -138,8 +139,9 @@ public class TablaListaTickets extends JFrame {
 		tickets_abiertos.getAutoscrolls();
 		tickets_abiertos.setRowHeight(30);
 		tickets_abiertos.setRowSorter(sorter);//ordena la columna de forma ascendente o descendente
-		//sorter.setRowFilter(RowFilter.numberFilter(ComparisonType.BEFORE, 10, 0));//muestra los diez primeros
+		
 
+		//cuando pulsas sobre una fila te abre el ticket que estas seleccionando y te saca toda la informacion completa de dicho ticket
 		tickets_abiertos.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 
@@ -151,7 +153,7 @@ public class TablaListaTickets extends JFrame {
 				fecha_creacion =  tickets_abiertos.getValueAt(row, 4).toString();
 				nombre_cliente = usuario_cliente(Integer.parseInt(tickets_abiertos.getValueAt(row, 5).toString()));
 				Ticketindividual ticket_individual = new Ticketindividual(ticket_id, title, desc, ticket_status, fecha_creacion, nombre_cliente);
-		
+				ticket_individual.peticionTicketasignados();
 				if (ClienteTFG2.tipo>=3) {//si eres usuario con login o sin login, no podras modificar un ticket
 					System.out.println(ClienteTFG2.tipo);
 					ticket_individual.modificar_btn.setEnabled(true);
@@ -183,6 +185,12 @@ public class TablaListaTickets extends JFrame {
 		getContentPane().add(lblListaDeTickets);
 		
 		JButton btnAadirTicket = new JButton("a\u00F1adir ticket");
+		btnAadirTicket.setEnabled(false);
+		if(ClienteTFG2.tipo>2) {
+			btnAadirTicket.setEnabled(true);
+		}else {
+			btnAadirTicket.setEnabled(false);
+		}
 		btnAadirTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CreaTickets crearticket=new CreaTickets();
@@ -190,18 +198,8 @@ public class TablaListaTickets extends JFrame {
 				dispose();
 			}
 		});
-		btnAadirTicket.setBounds(648, 377, 128, 40);
+		btnAadirTicket.setBounds(799, 377, 128, 40);
 		getContentPane().add(btnAadirTicket);
-		
-		JButton salir_btn = new JButton("Salir");
-		salir_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-            	System.exit(0);
-				dispose();
-			}
-		});
-		salir_btn.setBounds(799, 377, 128, 40);
-		getContentPane().add(salir_btn);
 		
 		JButton actualizar_btn = new JButton("Actualizar");
 		actualizar_btn.addActionListener(new ActionListener() {
@@ -211,7 +209,7 @@ public class TablaListaTickets extends JFrame {
 				dispose();
 			}
 		});
-		actualizar_btn.setBounds(501, 377, 128, 40);
+		actualizar_btn.setBounds(645, 377, 128, 40);
 		getContentPane().add(actualizar_btn);
 		
 		Image imagen_salir=new ImageIcon("salir2.png").getImage();
@@ -258,6 +256,7 @@ public class TablaListaTickets extends JFrame {
 		
 	}
 	
+	//parsea el id_cliente por su nombre cuando accedemos al ticket completo
 	public String nombre_cliente(int id_tabla_cliente) {
 		String nombre_cliente=null;
 		JSONObject pregunta = new JSONObject().put("peticion", "listusers");
@@ -285,6 +284,7 @@ public class TablaListaTickets extends JFrame {
 		
 		return nombre_cliente;
 	}
+	
 	
     public String usuario_cliente(int id_cliente) {
     	Usuario user = null;

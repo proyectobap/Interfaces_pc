@@ -17,13 +17,19 @@ import controlador.ManejadorEventos;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
+
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -42,12 +48,12 @@ public class Userindividual extends JFrame {
 	private JTextField id_text;
 	private JTextField email_text;
 	private JLabel tituloventana;
-
-
+	private JLabel atras_icon_label;
+	//muestra la informacion de un usuario cuando pinchamos en la lista de usuarios
 	public Userindividual(String id, String email, String nombre, String apellido, String tipo) {
 
-		
-		setSize(462, 588);//tamaño ventana
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
+		setSize(462, 489);//tamaño ventana
 		setUndecorated(true);//quitar bordes
 		setLocationRelativeTo(null); //setbounds(x, y, w, h) para las dos primeras
 		setResizable(false);
@@ -73,30 +79,30 @@ public class Userindividual extends JFrame {
 		
 		nombre_user = new JLabel("Nombre:");
 		nombre_user.setFont(new Font("Tahoma", Font.BOLD, 14));
-		nombre_user.setBounds(99, 184, 94, 32);
+		nombre_user.setBounds(99, 140, 94, 32);
 		getContentPane().add(nombre_user);
 		
 		apellido_user = new JLabel("Apellido:");
 		apellido_user.setFont(new Font("Tahoma", Font.BOLD, 14));
-		apellido_user.setBounds(99, 227, 111, 32);
+		apellido_user.setBounds(99, 194, 111, 32);
 		getContentPane().add(apellido_user);
 		
 		nombre_text = new JTextField();
-		nombre_text.setBounds(215, 192, 190, 20);
+		nombre_text.setBounds(215, 148, 190, 20);
 		nombre_text.setEditable(false);
 		getContentPane().add(nombre_text);
 		nombre_text.setColumns(10);
 	
 	
 		apellido_text = new JTextField();
-		apellido_text.setBounds(215, 235, 190, 20);
+		apellido_text.setBounds(215, 202, 190, 20);
 		apellido_text.setEditable(false);
 		getContentPane().add(apellido_text);
 		apellido_text.setColumns(10);
 	
 	
 		id_text = new JTextField();
-		id_text.setBounds(215, 325, 190, 20);
+		id_text.setBounds(215, 316, 190, 20);
 		id_text.setEditable(false);
 		getContentPane().add(id_text);
 		id_text.setColumns(10);
@@ -115,7 +121,7 @@ public class Userindividual extends JFrame {
 		this.email_text.setText(email);
 		
 
-		
+		//nos lleva a otra ventana donde podremos modificar dicho usuario
 		modificar_btn = new JButton("modificar");
 		modificar_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -128,24 +134,53 @@ public class Userindividual extends JFrame {
 		modificar_btn.setBounds(215, 411, 190, 39);
 		getContentPane().add(modificar_btn);
 		
-		JButton atras_btn = new JButton("Atras");
-		atras_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				TablaListaUsers tablalistausers=new TablaListaUsers();
-				tablalistausers.setVisible(true);
-				dispose();
-			}
-		});
-		atras_btn.setBounds(215, 465, 190, 39);
-		getContentPane().add(atras_btn);
-		
 		tituloventana = new JLabel("Perfil de Usuario");
-		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 23));
-		tituloventana.setBounds(136, 88, 202, 39);
+		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 28));
+		tituloventana.setBounds(116, 48, 232, 39);
 		getContentPane().add(tituloventana);
 		
 
-		
+		Image imagen_salir=new ImageIcon("salir2.png").getImage();
+		atras_icon_label = new JLabel(new ImageIcon(imagen_salir.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		atras_icon_label.setBounds(10, 11, 53, 52);
+		atras_icon_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				TablaListaUsers tablalistausers=new TablaListaUsers();
+				tablalistausers.setVisible(true);
+				dispose();
+			
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
+		getContentPane().add(atras_icon_label);
 
 
 		inicializarComponentes();
@@ -165,7 +200,7 @@ public class Userindividual extends JFrame {
 
 	public void setEstado_label(JLabel estado_label) {
 		this.tipo_user = estado_label;
-		estado_label.setBounds(43, 270, 132, 32);
+		estado_label.setBounds(55, 251, 118, 32);
 	}
 
 
@@ -185,7 +220,7 @@ public class Userindividual extends JFrame {
 
 	public void setNum_ticket(JLabel num_ticket) {
 		this.id_user = num_ticket;
-		num_ticket.setBounds(55, 317, 155, 32);
+		num_ticket.setBounds(55, 308, 155, 32);
 	}
 
 	public JTextField getText_estado() {
@@ -234,7 +269,7 @@ public class Userindividual extends JFrame {
 
 	public void setText_estado(JTextField text_estado) {
 		this.user_type_text = text_estado;
-		text_estado.setBounds(215, 278, 190, 20);
+		text_estado.setBounds(215, 259, 190, 20);
 		text_estado.setEditable(false);
 	}
 }

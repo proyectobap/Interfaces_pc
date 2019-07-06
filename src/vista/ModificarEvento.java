@@ -42,6 +42,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 public class ModificarEvento extends JFrame {
 
@@ -57,8 +58,10 @@ public class ModificarEvento extends JFrame {
 	private JCheckBox resuelto_checkbox;
 	private JButton modificarEvento_btn;
 	private JScrollPane scroll;
+	private JTextField tiempo_text;
+	private JLabel minutos_label;
 
-	public ModificarEvento(String id_evento, String tipo, String desc, String is_done) {
+	public ModificarEvento(String id_evento, String tipo, String desc, String is_done, String tiempo_realizado) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(644, 649);//tamaño ventana
@@ -80,20 +83,25 @@ public class ModificarEvento extends JFrame {
 				if(tipo_evento_text.getText().equals("Tarea")) {
 					int tipo_evento=2;
 					if(resuelto_checkbox.isSelected()) {
-						modificarTarea(Integer.parseInt(id_evento_text.getText()), 5, true);
+						if(tiempo_text.getText().isEmpty()) {
+							tiempo_text.setText("0");
+							modificarTarea(Integer.parseInt(id_evento_text.getText()), Integer.parseInt(tiempo_text.getText()), true);
+							modificarEvento(textArea.getText(), Integer.parseInt(TablaListaTickets.ticket_id), tipo_evento, Integer.parseInt(id_evento_text.getText()));
+						}else {
+						modificarTarea(Integer.parseInt(id_evento_text.getText()), Integer.parseInt(tiempo_text.getText()), true);
 						modificarEvento(textArea.getText(), Integer.parseInt(TablaListaTickets.ticket_id), tipo_evento, Integer.parseInt(id_evento_text.getText()));
-						JOptionPane.showMessageDialog(null, "Tarea modificada con exito");
+						}
 					}else {
-						modificarTarea(Integer.parseInt(id_evento_text.getText()), 5, false);
+						modificarTarea(Integer.parseInt(id_evento_text.getText()), Integer.parseInt(tiempo_text.getText()), false);
 						modificarEvento(textArea.getText(), Integer.parseInt(TablaListaTickets.ticket_id), tipo_evento, Integer.parseInt(id_evento_text.getText()));
-						JOptionPane.showMessageDialog(null, "Tarea modificada con exito");
+						
 					}
 					
 					
 				}else if(tipo_evento_text.getText().equals("Seguimiento")){
 					int tipo_evento=1;
 					modificarEvento(textArea.getText(), Integer.parseInt(TablaListaTickets.ticket_id), tipo_evento, Integer.parseInt(id_evento_text.getText()));
-					JOptionPane.showMessageDialog(null, "Evento modificado con exito");
+					
 
 				}else {
 					System.out.println("nada");
@@ -120,17 +128,14 @@ public class ModificarEvento extends JFrame {
 		getContentPane().add(descripcionEvento_label);
 		
 		textArea = new JTextArea();
-		//textArea.setBounds(221, 359, 346, 68);
-		//textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		scroll = new JScrollPane(textArea);    
         scroll.setBounds(new Rectangle(221, 295, 346, 132));
-		//getContentPane().add(textArea);
 		getContentPane().add(scroll);
 		
 		tipo_evento_text = new JTextField();
 		tipo_evento_text.setBounds(221, 238, 346, 20);
-		//tipo_evento_text.setEditable(false);
+		
 		getContentPane().add(tipo_evento_text);
 		tipo_evento_text.setColumns(10);
 		
@@ -248,6 +253,39 @@ public class ModificarEvento extends JFrame {
 		this.id_evento_text.setText(id_evento);
 		this.tipo_evento_text.setText(tipo);
 		this.textArea.setText(desc);
+		
+		
+		JLabel tiempo_label = new JLabel("Tiempo en realizar la tarea:");
+		tiempo_label.setFont(new Font("Tahoma", Font.BOLD, 14));
+		tiempo_label.setBounds(26, 465, 185, 14);
+		if(tipo_evento_text.getText().equals("Tarea")) {
+			tiempo_label.setVisible(true);
+		}else {
+			tiempo_label.setVisible(false);
+		}
+		getContentPane().add(tiempo_label);
+		
+		tiempo_text = new JTextField();
+		tiempo_text.setBounds(221, 464, 51, 20);
+		if(tipo_evento_text.getText().equals("Tarea")) {
+			tiempo_text.setVisible(true);
+			tiempo_text.setText(tiempo_realizado);
+		}else {
+			tiempo_text.setVisible(false);
+		}
+		getContentPane().add(tiempo_text);
+		tiempo_text.setColumns(10);
+		
+		minutos_label = new JLabel("Minutos.");
+		minutos_label.setHorizontalAlignment(SwingConstants.LEFT);
+		if(tipo_evento_text.getText().equals("Tarea")) {
+			minutos_label.setVisible(true);
+			
+		}else {
+			minutos_label.setVisible(false);
+		}
+		minutos_label.setBounds(282, 467, 60, 14);
+		getContentPane().add(minutos_label);
 		
 		inicializarComponentes();
 		
@@ -440,7 +478,7 @@ public class ModificarEvento extends JFrame {
 			ticketindividual.modificar_btn.setEnabled(false);
 		}
 		ticketindividual.setVisible(true);
-		
+		JOptionPane.showMessageDialog(null, "Modificacion con exito");
 		dispose();
 
 		
@@ -470,7 +508,7 @@ public class ModificarEvento extends JFrame {
 			// TODO Bloque catch generado automáticamente
 			e.printStackTrace();
 		}
-		Ticketindividual ticketindividual = new Ticketindividual(TablaListaTickets.ticket_id, TablaListaTickets.title, 
+		/*Ticketindividual ticketindividual = new Ticketindividual(TablaListaTickets.ticket_id, TablaListaTickets.title, 
 				TablaListaTickets.desc, TablaListaTickets.ticket_status, TablaListaTickets.fecha_creacion, TablaListaTickets.nombre_cliente);
 		
 		if (ClienteTFG2.tipo>2) {
@@ -478,12 +516,10 @@ public class ModificarEvento extends JFrame {
 		}else {
 			ticketindividual.modificar_btn.setEnabled(false);
 		}
-		ticketindividual.setVisible(true);
+		ticketindividual.setVisible(true);*/
 		
 		
 	
     }
-    
-    
 }
 

@@ -9,11 +9,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import controlador.ClienteTFG;
 import controlador.ClienteTFG2;
 import controlador.ManejadorEventos;
+import modelo.Usuario;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -26,6 +28,7 @@ import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -39,7 +42,7 @@ public class VentanaPrincipal2 extends JFrame {
 	
 	
 	private static final long serialVersionUID = 1L;
-	private JButton btn_crear_ticket;
+	private static JButton btn_crear_ticket;
 	private JButton tickets_abiertos;
 	private JButton lista_usuarios;
 	public JSONObject prueba;
@@ -50,6 +53,8 @@ public class VentanaPrincipal2 extends JFrame {
 
 
 	public VentanaPrincipal2() {
+		
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(394, 574);//tamaño ventana
@@ -59,6 +64,8 @@ public class VentanaPrincipal2 extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);//importante para que funciones los botones que metemos
 		inicializarComponentes();
+		
+		
 		
 
 		
@@ -107,11 +114,10 @@ public class VentanaPrincipal2 extends JFrame {
 		lista_usuarios.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lista_usuarios.setBounds(74, 305, 256, 49);
 		lista_usuarios.addActionListener(new ActionListener() {
-			
+			//Cuando pulsemos obtendremos una tabla con todos los usuarios que estan registrados en esta aplicacion
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//ListaUsuarios list_users= new ListaUsuarios();
-				//list_users.setVisible(true);
+				
 				TablaListaUsers list_users = new TablaListaUsers();
 				list_users.setVisible(true);
 				dispose();
@@ -119,11 +125,21 @@ public class VentanaPrincipal2 extends JFrame {
 		});
 		getContentPane().add(lista_usuarios);
 		
+		//boton para salir de la aplicacion
 		salir_btn = new JButton("SALIR");
 		salir_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-				dispose();
+				
+				JSONObject peticion = new JSONObject();
+		    	peticion.put("peticion","exit");
+				
+				HiloPeticiones hilo = new HiloPeticiones(peticion);
+				hilo.start();
+				try {
+					hilo.join();
+				} catch (InterruptedException d) {
+					d.printStackTrace();
+				}
 				
 			}
 		});
@@ -131,14 +147,14 @@ public class VentanaPrincipal2 extends JFrame {
 		salir_btn.setBounds(74, 385, 256, 49);
 		getContentPane().add(salir_btn);
 		
-		titulo_text = new JLabel("Gestion de tickets");
+		titulo_text = new JLabel("BAP TICKETING");
 		titulo_text.setFont(new Font("Tahoma", Font.BOLD, 29));
-		titulo_text.setBounds(63, 47, 267, 38);
+		titulo_text.setBounds(77, 47, 267, 38);
 		getContentPane().add(titulo_text);
 		
 
 		
-		
+		//un label para acceder a tu perfil y poder cambiarlo tanto el perfil como la contraseña
 		miperfil_label = new JLabel("Mi Perfil");
 		miperfil_label.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		miperfil_label.setBounds(267, 512, 63, 24);
@@ -187,13 +203,23 @@ public class VentanaPrincipal2 extends JFrame {
 		logo = new JLabel(new ImageIcon(img.getScaledInstance(30, 32, Image.SCALE_SMOOTH)));
 		logo.setBounds(218, 495, 48, 49);
 		getContentPane().add(logo);
+    	comprobarPermisos();/*comprueba que el boton crear ticket solo este disponible
+    	si el que se ha logueado ha sido un tecnico, supervisor o Administrador*/
+		
 	}
 
 	
+	public static void comprobarPermisos() {
 
+		if(ClienteTFG2.tipo>2) {
+			System.out.println("pasa por el true " + ClienteTFG2.tipo);
+			btn_crear_ticket.setEnabled(true);
+		}else if(ClienteTFG2.tipo<=2){
+			System.out.println("pasa por el false " + ClienteTFG2.tipo);
 
-
-
+			btn_crear_ticket.setEnabled(false);
+		}
+	}
 
 
 	public JButton getBtn_crear_ticket() {
@@ -219,6 +245,8 @@ public class VentanaPrincipal2 extends JFrame {
 	public void setTickets_cerrados(JButton tickets_cerrados) {
 		this.lista_usuarios = tickets_cerrados;
 	}
+	
+
 
 }
 

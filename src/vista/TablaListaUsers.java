@@ -59,7 +59,8 @@ public class TablaListaUsers extends JFrame {
 		setTitle("Gestion tickets");
 		setResizable(false);
 		
-		/****/
+		//hacemos la peticion para que nos devuelva una tabla con todos los usuarios que tiene la aplicacion registrados
+		/************************************************************************************************************/
 		
 		String nombres_columnas[]= {"id", "Email", "Nombre", "Apellido", "Tipo Usuario"};//columnas de la tabla 
 		DefaultTableModel dtm = new DefaultTableModel(nombres_columnas, 0);
@@ -126,6 +127,7 @@ public class TablaListaUsers extends JFrame {
 		lista_usuarios.setRowHeight(30);
 		lista_usuarios.setRowSorter(sorter);//ordena la columna de forma ascendente o descendente
 		
+		//si apretamos en una fila nos abrira una ventana y nos mostrara la informacion del usuario, pudiendo modificarla en caso de ser admin
 		lista_usuarios.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				int row = lista_usuarios.rowAtPoint(e.getPoint());
@@ -145,7 +147,7 @@ public class TablaListaUsers extends JFrame {
 		});
 		
 		
-		/****/
+		/************************************************************************************************************/
 		getContentPane().setLayout(null);
 		
 		getContentPane().add(contentPanel);
@@ -154,16 +156,17 @@ public class TablaListaUsers extends JFrame {
 		lista_usuarios.setBackground(new Color(255, 255, 255));
 		lista_usuarios.getRowMargin();
 		JScrollPane scrollPane = new JScrollPane(lista_usuarios);
-		scrollPane.setBounds(81, 97, 868, 214);
+		scrollPane.setBounds(65, 97, 868, 214);
 		getContentPane().add(scrollPane);
 		
 		JLabel lblListaDeUsuarios = new JLabel("Lista de Usuarios");
-		lblListaDeUsuarios.setFont(new Font("Tahoma", Font.BOLD, 23));
-		lblListaDeUsuarios.setBounds(372, 34, 265, 37);
+		lblListaDeUsuarios.setFont(new Font("Tahoma", Font.BOLD, 28));
+		lblListaDeUsuarios.setBounds(383, 24, 248, 37);
 		getContentPane().add(lblListaDeUsuarios);
 		
+		//este boton estara habilitado en caso de ser Administrador
 		JButton btnNewButton = new JButton("Crear Usuario");
-		if(ClienteTFG2.tipo>4) {
+		if(ClienteTFG2.tipo>4) {//solamente podran crear usuarios los administradores
 			btnNewButton.setEnabled(true);
 		}else {
 			btnNewButton.setEnabled(false);
@@ -175,18 +178,8 @@ public class TablaListaUsers extends JFrame {
 				dispose();
 			}
 		});
-		btnNewButton.setBounds(671, 348, 125, 47);
+		btnNewButton.setBounds(810, 348, 125, 47);
 		getContentPane().add(btnNewButton);
-		
-		JButton salir_btn = new JButton("Salir");
-		salir_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-				dispose();
-			}
-		});
-		salir_btn.setBounds(824, 348, 125, 47);
-		getContentPane().add(salir_btn);
 		
 		JButton actualizar_btn = new JButton("Actualizar");
 		actualizar_btn.addActionListener(new ActionListener() {
@@ -196,7 +189,7 @@ public class TablaListaUsers extends JFrame {
 				dispose();
 			}
 		});
-		actualizar_btn.setBounds(522, 348, 125, 47);
+		actualizar_btn.setBounds(658, 348, 125, 47);
 		getContentPane().add(actualizar_btn);
 		
 		Image imagen_salir=new ImageIcon("salir2.png").getImage();

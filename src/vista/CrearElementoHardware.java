@@ -55,6 +55,7 @@ public class CrearElementoHardware extends JFrame {
 	private JTextField txtHardware;
 
 	public CrearElementoHardware(int ticket_id) {
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(584, 553);//tamaño ventana
@@ -68,9 +69,16 @@ public class CrearElementoHardware extends JFrame {
 		cambiar_pass_btn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
+				if(nombre_hardware_text.getText().isEmpty() || sn_hardware_text.getText().isEmpty() || marca_text.getText().isEmpty() || 
+						modelo_hardware_text.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "te has dejado algun campo vacio");
 
+					
+				}else {
+					
 				newElementoHardware(nombre_hardware_text.getText(), sn_hardware_text.getText(), marca_text.getText(), modelo_hardware_text.getText());//se crea
 				asignarElemento(ticket_id, listadoElementos());//se asigna el elemento al ticket
+				}
 
 			}
 		});

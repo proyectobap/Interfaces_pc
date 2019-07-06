@@ -44,7 +44,6 @@ public class CreaTickets extends JFrame {
 	private JComboBox comboBox_estado_ticket;
 	int estado_ticket;
 	Border border = BorderFactory.createLineBorder(Color.BLUE);
-	private JButton atras_btn;
 	private JLabel lblCrearTicket;
 	private JComboBox comboBox;
 	private JLabel atras_icon_label;
@@ -55,7 +54,7 @@ public class CreaTickets extends JFrame {
 	public CreaTickets() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setResizable(false);
-		setSize(647, 660);
+		setSize(621, 534);
 		setUndecorated(true);//quitar bordes
 		setLocationRelativeTo(null); //setbounds(x, y, w, h) para las dos primeras
 		contentPane = new JPanel();
@@ -105,45 +104,53 @@ public class CreaTickets extends JFrame {
 		
 		setBtnCrearTicket(new JButton("Crear ticket"));
 		getBtnCrearTicket().setFont(new Font("Tahoma", Font.BOLD, 13));
-		getBtnCrearTicket().setBounds(389, 493, 167, 35);
+		getBtnCrearTicket().setBounds(389, 475, 167, 35);
 		btnCrearTicket.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {//cuando pulsamos al boton llamamos a la peticion para crear el ticket y crearlo.
+				if(getText_nombre().getText().isEmpty() || getText_descripcion().getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "te has dejado campos vacios");
+
+				}else {
 				
-				if (getComboBox_estado_ticket().getSelectedItem().toString()=="Abierto") {
-					estado_ticket=1;
-				}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="Asignado") {
-					estado_ticket=2;
-				}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="En espera (terceros)") {
-					estado_ticket=3;
-				}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="En espera (Cliente)") {
-					estado_ticket=4;
-				}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="Solucionado") {
-					estado_ticket=5;
-				}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="cerrado") {
-					estado_ticket=6;
+					//parseamos el estado que hayamos elegido para trasnformarlo en un numero que es el que recibe la base de datos.
+					if (getComboBox_estado_ticket().getSelectedItem().toString()=="Abierto") {
+						estado_ticket=1;
+					}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="Asignado") {
+						estado_ticket=2;
+					}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="En espera (terceros)") {
+						estado_ticket=3;
+					}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="En espera (Cliente)") {
+						estado_ticket=4;
+					}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="Solucionado") {
+						estado_ticket=5;
+					}else if(getComboBox_estado_ticket().getSelectedItem().toString()=="cerrado") {
+						estado_ticket=6;
+					}
+					
+					//cogemos del combobox solo el id del cliente
+					int id_cliente = idCliente();
+					System.out.println("este es el id del cliente " + String.valueOf(getComboBox().getSelectedItem())+" "+ id_cliente);
+					
+					//peticion para crear el ticket
+					JSONObject peticion=crearTicket(getText_nombre().getText(), getText_descripcion().getText(), estado_ticket, id_cliente);
+					
+					JSONObject pregunta = peticion;
+					System.out.println(pregunta);
+					
+					HiloPeticiones hilo = new HiloPeticiones(pregunta);
+					hilo.start();
+					try {
+						hilo.join();
+					} catch (InterruptedException d) {
+						d.printStackTrace();
+					}
+					JOptionPane.showMessageDialog(null, "ticket creado con exito");
+					VentanaPrincipal2 ventanaprincipal= new VentanaPrincipal2();
+					ventanaprincipal.setVisible(true);
+					dispose();
 				}
-				
-				int id_cliente = idCliente();
-				System.out.println("este es el id del cliente " + String.valueOf(getComboBox().getSelectedItem())+" "+ id_cliente);
-				
-				JSONObject peticion=crearTicket(getText_nombre().getText(), getText_descripcion().getText(), estado_ticket, id_cliente);
-				
-				JSONObject pregunta = peticion;
-				System.out.println(pregunta);
-				
-				HiloPeticiones hilo = new HiloPeticiones(pregunta);
-				hilo.start();
-				try {
-					hilo.join();
-				} catch (InterruptedException d) {
-					d.printStackTrace();
-				}
-				JOptionPane.showMessageDialog(null, "ticket creado con exito");
-				VentanaPrincipal2 ventanaprincipal= new VentanaPrincipal2();
-				ventanaprincipal.setVisible(true);
-				dispose();
 				
 			}
 			
@@ -164,18 +171,6 @@ public class CreaTickets extends JFrame {
 		getComboBox_estado_ticket().addItem("Solucionado");
 		getComboBox_estado_ticket().addItem("cerrado");
 		contentPane.add(getComboBox_estado_ticket());
-		
-		atras_btn = new JButton("Atras");
-		atras_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		atras_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				VentanaPrincipal2 ventanaprincipal= new VentanaPrincipal2();
-				ventanaprincipal.setVisible(true);
-				dispose();
-			}
-		});
-		atras_btn.setBounds(389, 551, 167, 35);
-		contentPane.add(atras_btn);
 		
 		lblCrearTicket = new JLabel("Crear Ticket");
 		lblCrearTicket.setFont(new Font("Tahoma", Font.BOLD, 23));

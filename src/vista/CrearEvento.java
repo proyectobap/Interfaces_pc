@@ -127,7 +127,6 @@ public class CrearEvento extends JFrame {
 		comboBox.addItem("Tarea");
 		comboBox.addItem("Seguimiento");
 		comboBox.addItem("Solucion");
-		comboBox.addItem("Borrado");
 		getContentPane().add(comboBox);
 		
 		textArea = new JTextArea();

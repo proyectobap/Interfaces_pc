@@ -150,39 +150,7 @@ public class Login extends JFrame implements RespuestaLogin {
 		getBoton1().setBackground(Color.WHITE);
 		getBoton1().setFont(new Font("Dialog", Font.BOLD, 12));
 		getBoton1().setForeground(new Color(13,81,33));//color letra
-		boton1.addMouseListener(new MouseListener(){
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				boton1.setBackground(Color.green);
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				boton1.setBackground(Color.WHITE);
-				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				
-			}
-			
-		});
 		boton1.addActionListener(new ActionListener() {
 			
 			@Override

@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import vista.VentanaPrincipal2;
+
 public class ClienteTFG2 extends Thread{
     
     private String respuestaEnc;
@@ -135,7 +137,8 @@ public class ClienteTFG2 extends Thread{
             	id_usuario_logueado = tipo_user.getInt("user_id");
             	System.out.println("id del usuario logueado: "+id_usuario_logueado);
             	System.out.println("tipo de usuario que se a logueado: " + tipo);
-            	
+            	VentanaPrincipal2.comprobarPermisos();/*comprueba que el boton crear ticket solo este disponible
+            	si el que se ha logueado ha sido un tecnico, supervisor o Administrador*/
             }
             
             if (respuesta.getInt("response") == 400) {
@@ -157,7 +160,7 @@ public class ClienteTFG2 extends Thread{
         while (running) {
         	
         	try {
-				Thread.sleep(60000);
+				Thread.sleep(1200000);
 			} catch (InterruptedException e) {
 				try {
 					
@@ -223,39 +226,42 @@ public class ClienteTFG2 extends Thread{
         respuestaEnc = (String) entrada.readObject();
         JSONObject rr = new JSONObject(enc.symetricDecript(respuestaEnc));
         System.out.println(rr.toString());
-    	JSONArray tipo_usuario_login = rr.getJSONArray("content");
+    	JSONArray arraycontent = rr.getJSONArray("content");
     	System.out.println("imprimir peticion "+peticion.toString());
     	if (peticion.getString("peticion").equalsIgnoreCase("newUser")){
-        	JSONObject tipo_user = tipo_usuario_login.getJSONObject(0);
+        	JSONObject tipo_user = arraycontent.getJSONObject(0);
         	id_user = tipo_user.getInt("id");
         	System.out.println("id del nuevo user" + id_user);
     	}
     	if (peticion.getString("peticion").equalsIgnoreCase("newTicket")){
-        	JSONObject tipo_user = tipo_usuario_login.getJSONObject(0);
+        	JSONObject tipo_user = arraycontent.getJSONObject(0);
         	id_ticket = tipo_user.getInt("id");
         	System.out.println("id del nuevo ticket" + id_ticket);
     	}
     	if (peticion.getString("peticion").equalsIgnoreCase("TECHRELATION")){
-    		System.out.println("longitud del content "+ tipo_usuario_login.length());
-    		if(tipo_usuario_login.length()==0) {
+    		System.out.println("longitud del content "+ arraycontent.length());
+    		if(arraycontent.length()==0) {
     			id_user_asignado=0;
     		}else {
-	    		for (int i=0; i < tipo_usuario_login.length(); i++) {
-	        	JSONObject tipo_user = tipo_usuario_login.getJSONObject(i);
+	    		for (int i=0; i < arraycontent.length(); i++) {
+	        	JSONObject tipo_user = arraycontent.getJSONObject(i);
 	        	id_user_asignado = tipo_user.getInt("assigned_tech");
 	    		}
     		}
     	}
     	if (peticion.getString("peticion").equalsIgnoreCase("LISTEVENTS")){
-    		System.out.println("longitud del content "+ tipo_usuario_login.length());
-    		if(tipo_usuario_login.length()!=0) {
+    		System.out.println("longitud del content "+ arraycontent.length());
+    		if(arraycontent.length()!=0) {
     			lista_eventos=true;
     			lista_eventos_numero=1;
-    		}else if(tipo_usuario_login.length()==0){
+    		}else if(arraycontent.length()==0){
     			
     			lista_eventos=false;
 
     		}
+    	}
+    	if (peticion.getString("peticion").equalsIgnoreCase("exit")){
+        	System.exit(0);
     	}
   
         interfaz2.respuesta(rr);

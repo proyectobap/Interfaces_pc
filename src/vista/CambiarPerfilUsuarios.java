@@ -17,6 +17,7 @@ import controlador.ManejadorEventos;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
@@ -30,6 +31,9 @@ import java.security.InvalidKeyException;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
+
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -46,21 +50,23 @@ public class CambiarPerfilUsuarios extends JFrame {
 	private JComboBox comboBox;
 	private int tipo_usuario;
 	private JTextField id_text;
+	private JLabel atras_icon_label;
 	
 
 
 	public CambiarPerfilUsuarios() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(452, 619);//tamaño ventana
+		setSize(452, 521);//tamaño ventana
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setUndecorated(true);//quitar bordes
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
-		JButton cambiar_pass_btn = new JButton("Cambiar");
-		cambiar_pass_btn.addActionListener(new ActionListener() {
-			
+		JButton cambiar_perfil_users = new JButton("Cambiar");
+		cambiar_perfil_users.addActionListener(new ActionListener() {
+			//cambia los datos del perfil del usuario
 			public void actionPerformed(ActionEvent e) {
 				if (getComboBox().getSelectedItem().toString()=="Administrador") {
 					tipo_usuario=5;
@@ -92,26 +98,9 @@ public class CambiarPerfilUsuarios extends JFrame {
 				dispose();
 			}
 		});
-		cambiar_pass_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		cambiar_pass_btn.setBounds(227, 446, 156, 36);
-		getContentPane().add(cambiar_pass_btn);
-		
-		JButton atras_btn = new JButton("Atras");
-		atras_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Userindividual userindividual = new Userindividual(TablaListaUsers.user_id, TablaListaUsers.email, 
-						TablaListaUsers.nombre, TablaListaUsers.apellido, TablaListaUsers.tipo_user);
-				if (ClienteTFG2.tipo>4) {//si el usuario logueado es un Administrador el boton modificar se activara
-					System.out.println(ClienteTFG2.tipo);
-					userindividual.modificar_btn.setEnabled(true);
-				}
-				userindividual.setVisible(true);
-				dispose();
-			}
-		});
-		atras_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		atras_btn.setBounds(227, 506, 156, 36);
-		getContentPane().add(atras_btn);
+		cambiar_perfil_users.setFont(new Font("Tahoma", Font.BOLD, 14));
+		cambiar_perfil_users.setBounds(227, 446, 156, 36);
+		getContentPane().add(cambiar_perfil_users);
 		
 		JLabel nombre_label = new JLabel("Nombre:");
 		nombre_label.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -158,6 +147,8 @@ public class CambiarPerfilUsuarios extends JFrame {
 		getComboBox().addItem("Supervisor");
 		getComboBox().addItem("Administrador");
 		
+		getComboBox().setSelectedItem(TablaListaUsers.tipo_user);//selecciona por defecto el tipo de usuario que es.
+		
 		JLabel id_user_label = new JLabel("Id del usuario:");
 		id_user_label.setFont(new Font("Tahoma", Font.BOLD, 14));
 		id_user_label.setBounds(86, 389, 100, 28);
@@ -169,9 +160,58 @@ public class CambiarPerfilUsuarios extends JFrame {
 		id_text.setColumns(10);
 		
 		JLabel tituloventana = new JLabel("Modificar Perfil");
-		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 23));
-		tituloventana.setBounds(136, 84, 187, 56);
+		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 28));
+		tituloventana.setBounds(119, 69, 223, 56);
 		getContentPane().add(tituloventana);
+		
+		
+		//nos devuelve a la ventana anterior
+		Image imagen_salir=new ImageIcon("salir2.png").getImage();
+		atras_icon_label = new JLabel(new ImageIcon(imagen_salir.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		atras_icon_label.setBounds(10, 11, 53, 52);
+		atras_icon_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				Userindividual userindividual = new Userindividual(TablaListaUsers.user_id, TablaListaUsers.email, 
+						TablaListaUsers.nombre, TablaListaUsers.apellido, TablaListaUsers.tipo_user);
+				if (ClienteTFG2.tipo>4) {//si el usuario logueado es un Administrador el boton modificar se activara
+					System.out.println(ClienteTFG2.tipo);
+					userindividual.modificar_btn.setEnabled(true);
+				}
+				userindividual.setVisible(true);
+				dispose();
+			
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
+		getContentPane().add(atras_icon_label);
 		
 		inicializarComponentes();
 		

@@ -18,6 +18,7 @@ import controlador.ManejadorEventos;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
@@ -32,6 +33,9 @@ import java.security.InvalidKeyException;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
+
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -54,83 +58,73 @@ public class Miperfil extends JFrame {
 	private JTextField user_type_text;
 	private JLabel modificar_perfil_label;
 	private JLabel cambiar_passLabel;
+	private JLabel atras_icon_label;
 	
 
 
 	public Miperfil() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		datosmiperfil();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(445, 601);//tamaño ventana
+		setSize(445, 448);//tamaño ventana
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setUndecorated(true);//quitar bordes
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
-		JButton atras_btn = new JButton("Atras");
-		atras_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				VentanaPrincipal2 ventanaprincipal = new VentanaPrincipal2();
-				ventanaprincipal.setVisible(true);
-				dispose();
-			}
-		});
-		atras_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		atras_btn.setBounds(219, 506, 156, 36);
-		getContentPane().add(atras_btn);
-		
 		JLabel nombre_label = new JLabel("Nombre:");
 		nombre_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		nombre_label.setBounds(120, 195, 61, 20);
+		nombre_label.setBounds(122, 136, 61, 20);
 		getContentPane().add(nombre_label);
 		
 		JLabel apellido_label = new JLabel("Apellido:");
 		apellido_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		apellido_label.setBounds(122, 243, 59, 20);
+		apellido_label.setBounds(122, 183, 59, 20);
 		getContentPane().add(apellido_label);
 		
 		JLabel email_label = new JLabel("Email:");
 		email_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		email_label.setBounds(140, 297, 41, 20);
+		email_label.setBounds(142, 231, 41, 20);
 		getContentPane().add(email_label);
 		
 		JLabel user_type_label = new JLabel("Tipo de Usuario:");
 		user_type_label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		user_type_label.setBounds(69, 351, 112, 20);
+		user_type_label.setBounds(71, 280, 112, 20);
 		getContentPane().add(user_type_label);
 		
 		setNombre_text(new JTextField(nombre));
-		getNombre_text().setBounds(219, 197, 156, 20);
+		getNombre_text().setBounds(219, 138, 156, 20);
 		getNombre_text().setEditable(false);
 		getContentPane().add(getNombre_text());
 		getNombre_text().setColumns(10);
 		
 		setApellido_text(new JTextField(apellido));
-		getApellido_text().setBounds(219, 245, 156, 20);
+		getApellido_text().setBounds(219, 185, 156, 20);
 		getApellido_text().setEditable(false);
 		getContentPane().add(getApellido_text());
 		getApellido_text().setColumns(10);
 		
 		setEmail_text(new JTextField(email));
-		getEmail_text().setBounds(219, 299, 156, 20);
+		getEmail_text().setBounds(219, 233, 156, 20);
 		getEmail_text().setEditable(false);
 		getContentPane().add(getEmail_text());
 		getEmail_text().setColumns(10);
 		
 		JLabel tituloventana = new JLabel("Mi Perfil");
-		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 23));
-		tituloventana.setBounds(180, 92, 97, 28);
+		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 28));
+		tituloventana.setBounds(159, 45, 139, 28);
 		getContentPane().add(tituloventana);
 		
 		user_type_text = new JTextField(user_type);
-		user_type_text.setBounds(219, 353, 156, 20);
+		user_type_text.setBounds(219, 282, 156, 20);
 		user_type_text.setEditable(false);
 		getContentPane().add(user_type_text);
 		user_type_text.setColumns(10);
 		
 		modificar_perfil_label = new JLabel("Modificar mi perfil");
 		modificar_perfil_label.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		modificar_perfil_label.setBounds(247, 424, 128, 21);
+		modificar_perfil_label.setBounds(243, 351, 128, 21);
 		modificar_perfil_label.addMouseListener(new MouseListener(){
 
 			@Override
@@ -172,9 +166,49 @@ public class Miperfil extends JFrame {
 		});
 		getContentPane().add(modificar_perfil_label);
 		
+		Image imagen_salir=new ImageIcon("salir2.png").getImage();
+		atras_icon_label = new JLabel(new ImageIcon(imagen_salir.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		atras_icon_label.setBounds(24, 21, 53, 52);
+		atras_icon_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				VentanaPrincipal2 ventanaprincipal = new VentanaPrincipal2();
+				ventanaprincipal.setVisible(true);
+				dispose();
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
+		getContentPane().add(atras_icon_label);
 		cambiar_passLabel = new JLabel("Cambiar mi contrase\u00F1a");
 		cambiar_passLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cambiar_passLabel.setBounds(212, 456, 163, 21);
+		cambiar_passLabel.setBounds(212, 391, 163, 21);
 		cambiar_passLabel.addMouseListener(new MouseListener(){
 
 			@Override

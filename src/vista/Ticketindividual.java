@@ -82,9 +82,13 @@ public class Ticketindividual extends JFrame {
 	public static String tipo_evento;
 	public static String mod_date;
 	public static String is_done;
+	public static String tiempo_realizado;
 	private JLabel añadir_elemento_label;
 	private JLabel mostrar_elementos_label;
 	private JLabel eliminar_elemento_btn;
+	private JLabel añadir_software_label;
+	private JLabel elemento_software_text;
+	private JLabel eliminar_software_label;
 
 
 	public Ticketindividual(String numticket, String titulo_ticket, String area_desc, String estado, String fecha, String nombre_cliente) {
@@ -158,6 +162,7 @@ public class Ticketindividual extends JFrame {
 		getContentPane().add(nombre_cliente_text);
 		nombre_cliente_text.setColumns(10);
 		
+		//cogemos la informacion de la tabla y se la pasamos al ticket individual 
 		this.num_ticket_text.setText(numticket);
 		this.titulo_text.setText(titulo_ticket);
 		this.getArea_desc_2().setText(area_desc);
@@ -165,6 +170,7 @@ public class Ticketindividual extends JFrame {
 		this.fecha_text.setText(fecha);
 		this.nombre_cliente_text.setText(nombre_cliente);
 		
+		//podremos modificar el ticket pulsando en este boton
 		modificar_btn = new JButton("Modificar ticket");
 		modificar_btn.setFont(new Font("Tahoma", Font.BOLD, 14));
 		modificar_btn.addActionListener(new ActionListener() {
@@ -199,7 +205,14 @@ public class Ticketindividual extends JFrame {
 		nombreCliente();
 		getContentPane().add(getComboBox_asignarTicket());
 		
+		//podremos asignar el ticket a un tecnico o supervisor
 		asignar_btn = new JButton("Asignar");
+		asignar_btn.setEnabled(false);
+		if(ClienteTFG2.tipo>2) {//si no eres tecnico, supervisor, o admin, no podras asignar tickets
+			asignar_btn.setEnabled(true);
+		}else {
+			asignar_btn.setEnabled(false);
+		}
 		asignar_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -216,6 +229,12 @@ public class Ticketindividual extends JFrame {
 		
 		Image imagen_delete=new ImageIcon("delete.png").getImage();
 		eliminar_btn = new JLabel(new ImageIcon(imagen_delete.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		if(ClienteTFG2.tipo<3) {
+			eliminar_btn.setVisible(false);
+		}else {
+			eliminar_btn.setVisible(true);
+
+		}
 		eliminar_btn.addMouseListener(new MouseListener(){
 
 			@Override
@@ -296,16 +315,29 @@ public class Ticketindividual extends JFrame {
 		});
 		getContentPane().add(atras_icon_label);
 		
+		//podremos añadir eventos al ticket para hacer un seguimiento mucho mas eficiente
 		añadir_evento_label = new JLabel("+ A\u00F1adir Evento");
 		añadir_evento_label.setFont(new Font("Tahoma", Font.BOLD, 14));
 		añadir_evento_label.setBounds(110, 401, 115, 21);
+		if(ClienteTFG2.tipo<3) {
+			añadir_evento_label.setEnabled(false);
+    		
+		}else {
+			añadir_evento_label.setEnabled(true);
+
+		}
 		añadir_evento_label.addMouseListener(new MouseListener(){
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				if(ClienteTFG2.tipo<3) {
+					añadir_evento_label.setEnabled(false);
+		    		JOptionPane.showMessageDialog(null, "no tienes permiso para añadir Eventos");
+				}else {
 				CrearEvento creaEvento= new CrearEvento(Integer.parseInt(num_ticket_text.getText()));
 				creaEvento.setVisible(true);
 				dispose();
+				}
 				
 			}
 
@@ -348,7 +380,7 @@ public class Ticketindividual extends JFrame {
 		mostrar_eventos_label.setBounds(290, 403, 272, 17);
 		getContentPane().add(mostrar_eventos_label);
 		
-		String nombres_columnas[]= {"ID Evento", "Descripcion", "Tipo de Evento", "Fecha Creacion", "Resuelto"};//columnas de la tabla 
+		String nombres_columnas[]= {"ID Evento", "Descripcion", "Tipo de Evento", "Fecha Creacion", "Resuelto", "Tiempo"};//columnas de la tabla 
 		dtm = new DefaultTableModel(nombres_columnas, 0);
 		sorter = new TableRowSorter(dtm);
 		table_eventos = new JTable(dtm);
@@ -361,16 +393,34 @@ public class Ticketindividual extends JFrame {
 		scrollPane.setVisible(false);
 		getContentPane().add(scrollPane);
 		
+		//podremos añadir elementos hardware en caso de que sea necesario, al ticket
 		añadir_elemento_label = new JLabel("+ A\u00F1adir Elemento Hardware");
 		añadir_elemento_label.setFont(new Font("Tahoma", Font.BOLD, 14));
 		añadir_elemento_label.setBounds(612, 312, 201, 14);
+		if(ClienteTFG2.tipo<3) {
+			añadir_elemento_label.setEnabled(false);
+		}else {
+			añadir_elemento_label.setEnabled(true);
+		}
 		añadir_elemento_label.addMouseListener(new MouseListener(){
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				CrearElementoHardware crearelemento = new CrearElementoHardware(Integer.parseInt(num_ticket_text.getText()));
-				crearelemento.setVisible(true);
-				dispose();
+				if(ClienteTFG2.tipo<3) {
+					añadir_elemento_label.setEnabled(false);
+		    		JOptionPane.showMessageDialog(null, "no tienes permiso para añadir elementos");
+
+				}else {
+					if(mostrar_elementos_label.getText().equals("no hay elementos") || mostrar_elementos_label.getText().isEmpty()) {
+					CrearElementoHardware crearelemento = new CrearElementoHardware(Integer.parseInt(num_ticket_text.getText()));
+					crearelemento.setVisible(true);
+					dispose();
+					}else {
+			    		JOptionPane.showMessageDialog(null, "ya tienes elementos hardware asignados");
+
+					}
+				}
+			
 				
 			}
 
@@ -405,15 +455,21 @@ public class Ticketindividual extends JFrame {
 		});
 		getContentPane().add(añadir_elemento_label);
 		
-		mostrar_elementos_label = new JLabel("New label");
-		mostrar_elementos_label.setFont(new Font("Tahoma", Font.BOLD, 14));
+		mostrar_elementos_label = new JLabel("");
+		mostrar_elementos_label.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		mostrar_elementos_label.setVisible(false);
-		mostrar_elementos_label.setBounds(651, 337, 370, 14);
+		mostrar_elementos_label.setBounds(650, 326, 370, 28);
 		getContentPane().add(mostrar_elementos_label);
 		
 		Image imagen_delete_element=new ImageIcon("delete.png").getImage();
 		eliminar_elemento_btn = new JLabel(new ImageIcon(imagen_delete.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
-		eliminar_elemento_btn.setBounds(1013, 333, 35, 32);
+		eliminar_elemento_btn.setBounds(1002, 334, 35, 32);
+		if(ClienteTFG2.tipo<3) {
+			eliminar_elemento_btn.setVisible(false);
+		}else {
+			eliminar_elemento_btn.setVisible(true);
+
+		}
 		eliminar_elemento_btn.addMouseListener(new MouseListener(){
 
 			@Override
@@ -449,6 +505,120 @@ public class Ticketindividual extends JFrame {
 			
 		});
 		getContentPane().add(eliminar_elemento_btn);
+		
+		añadir_software_label = new JLabel("+ A\u00F1adir Elemento Software");
+		añadir_software_label.setFont(new Font("Tahoma", Font.BOLD, 14));
+		añadir_software_label.setBounds(612, 365, 201, 14);
+		if(ClienteTFG2.tipo<3) {
+			añadir_software_label.setEnabled(false);
+		}else {
+			añadir_software_label.setEnabled(true);
+		}
+		añadir_software_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(ClienteTFG2.tipo<3) {
+					añadir_software_label.setEnabled(false);
+		    		JOptionPane.showMessageDialog(null, "no tienes permiso para añadir elementos");
+
+				}else {
+					if(elemento_software_text.getText().equals("no hay elementos") || elemento_software_text.getText().isEmpty()) {
+			    		
+						CrearElementoSoftware crearelemento = new CrearElementoSoftware(Integer.parseInt(num_ticket_text.getText()));
+						crearelemento.setVisible(true);
+						dispose();
+
+					}else {
+						JOptionPane.showMessageDialog(null, "ya tienes elemento software asignado");
+					}
+				}
+			
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				añadir_software_label.setForeground(Color.blue);
+				Font font = añadir_software_label.getFont();
+				Map attributes = font.getAttributes();
+				attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+				añadir_software_label.setFont(font.deriveFont(attributes));
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				añadir_software_label.setForeground(Color.black);
+				añadir_software_label.setFont(new Font("Tahoma", Font.BOLD, 14));					
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
+		getContentPane().add(añadir_software_label);
+		
+		elemento_software_text = new JLabel("");
+		elemento_software_text.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		elemento_software_text.setVisible(false);
+		elemento_software_text.setBounds(650, 390, 293, 30);
+		getContentPane().add(elemento_software_text);
+		
+		Image imagen_delete_element_software=new ImageIcon("delete.png").getImage();
+		eliminar_software_label = new JLabel(new ImageIcon(imagen_delete.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+		eliminar_software_label.setBounds(1002, 390, 35, 32);
+		
+		if(ClienteTFG2.tipo<3) {
+			eliminar_software_label.setVisible(false);
+		}else {
+			eliminar_software_label.setVisible(true);
+
+		}
+		eliminar_software_label.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				eliminar_asignacion_elementos_software(Integer.parseInt(num_ticket_text.getText()));
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
+		getContentPane().add(eliminar_software_label);
 		
 		//mostrareventosticket(Integer.parseInt(num_ticket_text.getText()));
 		peticionElementosasignados(Integer.parseInt(num_ticket_text.getText()));
@@ -728,7 +898,7 @@ public class Ticketindividual extends JFrame {
 
     public void peticionTicketasignados() {
     	
-		JSONObject peticion=informacion_ticket_asignados();
+		JSONObject peticion = informacion_ticket_asignados();
 		
 		JSONObject pregunta = peticion;
 		System.out.println(pregunta);
@@ -740,7 +910,34 @@ public class Ticketindividual extends JFrame {
 		} catch (InterruptedException d) {
 			d.printStackTrace();
 		}
-		ticket_asignado_label.setText("Ticket asignado a: no hay users asignados");
+		if(ClienteTFG2.id_user_asignado>0) {
+			JSONObject pregunta2 = new JSONObject().put("peticion", "listusers");
+			System.out.println(pregunta2);
+
+			HiloPeticiones hilo2 = new HiloPeticiones(pregunta2);
+			hilo2.start();
+			try {
+				hilo2.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			JSONArray array = hilo2.respueta.getJSONArray("content");
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject objc = (JSONObject) array.get(i);
+				Object obj[] = {objc.getInt("user_id"), objc.getString("email"), objc.getString("name"), objc.getString("last_name"), objc.getInt("user_type")};//filas de la tabla
+				String nombre_cliente_tabla=String.valueOf(objc.getString("name"));
+				
+				
+				if (ClienteTFG2.id_user_asignado == objc.getInt("user_id")){
+					Usuario user = new Usuario(ClienteTFG2.id_user_asignado, objc.getString("name"), objc.getString("last_name"),objc.getString("email"));
+					ticket_asignado_label.setText("Ticket asignado a: " + user.toString());
+				}
+			}
+		}else if(ClienteTFG2.id_user_asignado==0){
+			ticket_asignado_label.setText("Ticket asignado a: no hay users");
+		}
+		
 
     }
     
@@ -864,7 +1061,7 @@ public class Ticketindividual extends JFrame {
 					dtm.addRow(obj1);
 				}else if(objc.getInt("event_type")==2) {
 					String tipo_evento= "Tarea";
-					Object obj1[] = {objc.getInt("event_id"), objc.getString("event_desc"), tipo_evento, objc.getString("mod_date"), objc.getBoolean("is_done")};
+					Object obj1[] = {objc.getInt("event_id"), objc.getString("event_desc"), tipo_evento, objc.getString("mod_date"), objc.getBoolean("is_done"), objc.getInt("time")};
 					dtm.addRow(obj1);
 				}else if(objc.getInt("event_type")==3) {
 					String tipo_evento= "Solucion";
@@ -890,6 +1087,10 @@ public class Ticketindividual extends JFrame {
 			table_eventos.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
 			table_eventos.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
 			
+			table_eventos.getColumnModel().getColumn(5).setMaxWidth(0);//con estas cuatro lineas ocultamos la columna de id del evento ya que el cliente no tiene por que saberla
+			table_eventos.getColumnModel().getColumn(5).setMinWidth(0);
+			table_eventos.getTableHeader().getColumnModel().getColumn(5).setMaxWidth(0);
+			table_eventos.getTableHeader().getColumnModel().getColumn(5).setMinWidth(0);
 
 			
 			table_eventos.addMouseListener(new MouseAdapter() {
@@ -901,8 +1102,9 @@ public class Ticketindividual extends JFrame {
 						descripcion= table_eventos.getValueAt(row, 1).toString();
 						tipo_evento= table_eventos.getValueAt(row, 2).toString();
 						mod_date= table_eventos.getValueAt(row, 3).toString();
+						String tiempo="";
 						String resolve="";
-						ModificarEvento modificarevento =  new ModificarEvento(id_evento, tipo_evento, descripcion, resolve);
+						ModificarEvento modificarevento =  new ModificarEvento(id_evento, tipo_evento, descripcion, resolve, tiempo);
 						modificarevento.setVisible(true);
 						dispose();
 						
@@ -912,7 +1114,8 @@ public class Ticketindividual extends JFrame {
 						tipo_evento= table_eventos.getValueAt(row, 2).toString();
 						mod_date= table_eventos.getValueAt(row, 3).toString();
 						is_done= table_eventos.getValueAt(row, 4).toString();
-						ModificarEvento modificarevento =  new ModificarEvento(id_evento, tipo_evento, descripcion, is_done);
+						tiempo_realizado = table_eventos.getValueAt(row, 5).toString();
+						ModificarEvento modificarevento =  new ModificarEvento(id_evento, tipo_evento, descripcion, is_done, tiempo_realizado);
 						modificarevento.setVisible(true);
 						dispose();
 					}
@@ -990,8 +1193,14 @@ public class Ticketindividual extends JFrame {
 				Object objt[] = {objct.getInt("element_id"), objct.getString("internal_name"), objct.getInt("element_type")};//filas de la tabla
 				if (objct.getInt("element_type")==1) {
 					String tipo_elemento="Hardware";
-					mostrar_elementos_label.setText(objct.getInt("element_id")+" "+ objct.getString("internal_name") + " " + tipo_elemento);
+					mostrar_elementos_label.setText("- " + objct.getInt("element_id")+" "+ objct.getString("internal_name") + " " + objct.getString("brand")+
+							" " + objct.getString("model")+" "+ tipo_elemento);//brand model
 					mostrar_elementos_label.setVisible(true);
+				}else if(objct.getInt("element_type")==2) {
+					String tipo_elemento="Software";
+					elemento_software_text.setText("- " + objct.getInt("element_id")+" "+ objct.getString("internal_name") + " " +  objct.getString("version")+ 
+							" " + tipo_elemento);
+					elemento_software_text.setVisible(true);
 				}
 			}
 		}
@@ -1015,7 +1224,7 @@ public class Ticketindividual extends JFrame {
     public void eliminar_asignacion_elementos(int ticket_id) {
     	String elemento=mostrar_elementos_label.getText();
     	String [] id_elemento =elemento.split(" ");
-    	int id_elemento_separado= Integer.parseInt(id_elemento[0]);
+    	int id_elemento_separado= Integer.parseInt(id_elemento[1]);
     	
 		JSONObject peticion=peticionEliminar_elemento(ticket_id, id_elemento_separado);
 		
@@ -1031,6 +1240,30 @@ public class Ticketindividual extends JFrame {
 		}
 		JOptionPane.showMessageDialog(null, "Elemento eliminado");
 		mostrar_elementos_label.setText("no hay elementos");
+
+		
+	}
+    
+    //metodo para eliminar un elemento
+    public void eliminar_asignacion_elementos_software(int ticket_id) {
+    	String elemento=elemento_software_text.getText();
+    	String [] id_elemento =elemento.split(" ");
+    	int id_elemento_separado= Integer.parseInt(id_elemento[1]);
+    	
+		JSONObject peticion=peticionEliminar_elemento(ticket_id, id_elemento_separado);
+		
+		JSONObject pregunta = peticion;
+		System.out.println(pregunta);
+		
+		HiloPeticiones hilo = new HiloPeticiones(pregunta);
+		hilo.start();
+		try {
+			hilo.join();
+		} catch (InterruptedException d) {
+			d.printStackTrace();
+		}
+		JOptionPane.showMessageDialog(null, "Elemento eliminado");
+		elemento_software_text.setText("no hay elementos");
 
 		
 	}
