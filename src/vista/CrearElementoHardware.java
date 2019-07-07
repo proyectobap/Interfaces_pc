@@ -68,6 +68,9 @@ public class CrearElementoHardware extends JFrame {
 		JButton cambiar_pass_btn = new JButton("Crear Elemento");
 		cambiar_pass_btn.addActionListener(new ActionListener() {
 			
+			/* crearemos un elemento hardware y se lo asignaremos automaticamente al ticket desde donde se 
+			 * crea, ademas tambien comprobamos que ningun campo se quede vacio para que no se cree un elemento
+			 * en la base de datos vacio y nos pueda ocasionar problemas.*/
 			public void actionPerformed(ActionEvent e) {
 				if(nombre_hardware_text.getText().isEmpty() || sn_hardware_text.getText().isEmpty() || marca_text.getText().isEmpty() || 
 						modelo_hardware_text.getText().isEmpty()) {
@@ -86,7 +89,7 @@ public class CrearElementoHardware extends JFrame {
 		cambiar_pass_btn.setBounds(322, 446, 149, 36);
 		getContentPane().add(cambiar_pass_btn);
 		
-		vertiposElementos();
+		vertiposElementos();//esto nos responde dandonos los tipos de elementos que hay en la base de datos, era simplemente informativo, no hace nada mas.
 		
 		JLabel tituloventana = new JLabel("Crear Elemento");
 		tituloventana.setFont(new Font("Tahoma", Font.BOLD, 28));
@@ -107,7 +110,8 @@ public class CrearElementoHardware extends JFrame {
 		atras_icon_label = new JLabel(new ImageIcon(imagen_salir.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
 		atras_icon_label.setBounds(10, 11, 53, 52);
 		atras_icon_label.addMouseListener(new MouseListener(){
-
+			
+			//volvemos para atras y para eso creamos el ticket con los mismos datos que teniamos, de ahi que sean staticas las variables.
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Apéndice de método generado automáticamente

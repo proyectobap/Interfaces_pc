@@ -74,7 +74,10 @@ public class CambiarMiPerfil extends JFrame {
 		cambiar_pass_btn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				
+				/* Hacemos el metodo que enviara la peticion para modificar nuestro perfil
+				 * tambien comprobamos que los campos no esten vacios y que el Administrador si pueda
+				 * modificar su tipo de usuario mientras que los demas solo podran modificar su nombre, apellido, mail pero no
+				 * su tipo de Usuario*/
 				if(getEmail_text().getText().isEmpty() || getNombre_text().getText().isEmpty() || getApellido_text().getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "te has olvidado rellenar algun campo");
 
@@ -97,6 +100,7 @@ public class CambiarMiPerfil extends JFrame {
 						ventanaPrincipal.setVisible(true);
 						dispose();
 					}else {
+						//parseamos el tipo de usuario a numero para enviarselo a la base de datos
 						if (getComboBox().getSelectedItem().toString()=="Administrador") {
 							tipo_usuario=5;
 						}else if(getComboBox().getSelectedItem().toString()=="Supervisor") {
@@ -261,6 +265,7 @@ public class CambiarMiPerfil extends JFrame {
     	return prueba;
     }
 
+    	//getter y setter
 	public JComboBox getComboBox() {
 		return comboBox;
 	}
@@ -293,6 +298,7 @@ public class CambiarMiPerfil extends JFrame {
 		this.nombre_text = nombre_text;
 	}
 	
+	//metodo que envia la peticion para sacar nuestros datos de perfil.
 	public void datosmiperfil() {
 		JSONObject pregunta = new JSONObject().put("peticion", "listusers");
 		System.out.println(pregunta);

@@ -31,9 +31,8 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 
 public class CambiarMiPass extends JFrame {
-
 	
-	
+	//Variables que utilizaremos en esta ventana.
 	private static final long serialVersionUID = 1L;
 	public JSONObject prueba;
 	private JPasswordField passwordField;
@@ -42,6 +41,7 @@ public class CambiarMiPass extends JFrame {
 
 
 	public CambiarMiPass() {
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("iconoapp.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(474, 282);//tamaño ventana
@@ -51,6 +51,7 @@ public class CambiarMiPass extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);//importante para que funciones los botones que metemos
 		
+		//botones y Jlabel que insertamos en la ventana y que nos van a servir para poder cambiar la pass de nuestro perfil
 		JLabel new_pass_label = new JLabel("Nueva contrase\u00F1a:");
 		new_pass_label.setFont(new Font("Tahoma", Font.BOLD, 14));
 		new_pass_label.setBounds(100, 109, 130, 28);
@@ -71,7 +72,9 @@ public class CambiarMiPass extends JFrame {
 		
 		JButton cambiar_pass_btn = new JButton("Cambiar");
 		cambiar_pass_btn.addActionListener(new ActionListener() {
-			
+			/*hacemos la peticion para poder cambiar la pass, 
+			 * tambien comprobamos que los campos no esten vacios, y que tambien
+			 * sean iguales */
 			public void actionPerformed(ActionEvent e) {
 				
 				if(getPasswordField().getText().isEmpty() || getPasswordField_1().getText().isEmpty()) {
