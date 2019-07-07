@@ -3,18 +3,13 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import org.json.JSONObject;
-
-import controlador.ClienteTFG;
 import controlador.ClienteTFG2;
 import controlador.ManejadorEventos;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.swing.ImageIcon;

@@ -22,7 +22,7 @@ import javax.swing.border.Border;
 
 import org.json.JSONObject;
 
-import controlador.ClienteTFG;
+
 import controlador.ClienteTFG2;
 import controlador.EncryptModule;
 import controlador.ManejadorEventos;
@@ -46,6 +46,9 @@ public class Login extends JFrame implements RespuestaLogin {
 	private String user;
 	private boolean a = true;
 
+	/*Este metodo, cuando hacemos la peticion para el login y es correcto, se ejecutara
+	 * y abrira nuestra ventana principal de la aplicación.
+	 *  */
 	@Override
 	public void respuesta() {
 		System.out.println("LOGEADO!");
@@ -150,7 +153,37 @@ public class Login extends JFrame implements RespuestaLogin {
 		getBoton1().setBackground(Color.WHITE);
 		getBoton1().setFont(new Font("Dialog", Font.BOLD, 12));
 		getBoton1().setForeground(new Color(13,81,33));//color letra
+		getBoton1().addMouseListener(new MouseListener(){
 
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				getBoton1().setBackground(Color.green);				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				getBoton1().setBackground(Color.WHITE);				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Apéndice de método generado automáticamente
+				
+			}
+			
+		});
 		boton1.addActionListener(new ActionListener() {
 			
 			@Override

@@ -26,7 +26,6 @@ import javax.swing.table.TableRowSorter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import controlador.ClienteTFG;
 import controlador.ClienteTFG2;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -87,6 +86,7 @@ public class TablaListaUsers extends JFrame {
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject objc = (JSONObject) array.get(i);
 			Object obj[] = {objc.getInt("user_id"), objc.getString("email"), objc.getString("name"), objc.getString("last_name"), objc.getInt("user_type")};//filas de la tabla
+			//parseamos los tipos de usuario para que salgan en palabras y no en numero.
 			if (objc.getInt("user_type")==1) {
 				String a= String.valueOf(objc.getInt("user_type"));
 				a= "Usuario sin Login";

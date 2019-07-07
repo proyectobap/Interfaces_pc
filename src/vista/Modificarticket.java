@@ -13,7 +13,6 @@ import javax.swing.border.EmptyBorder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import controlador.ClienteTFG;
 import controlador.ClienteTFG2;
 import controlador.ManejadorEventos;
 import modelo.Usuario;
